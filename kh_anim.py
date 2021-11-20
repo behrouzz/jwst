@@ -29,8 +29,9 @@ def play(bodies, names, colors, sizes, path=True, legend=True, interval=20):
     ax.set_xticklabels([]) #new
     ax.set_zticklabels([]) #new
 
-    txt = ax.text(0, 0, 20886072841, '') #taghir be jaye payini
+    txt = ax.text(0, 0, 20886072841, ha='center', size='small', s='') #taghir be jaye payini
     #txt = ax.text(minxs, maxys, maxzs, '')
+    txt2 = ax.text(0,0,maxzs, ha='center', va='top', s='AstroDataScience.Net', alpha=0.5) # new
     
 
     lines = []
@@ -67,9 +68,10 @@ def play(bodies, names, colors, sizes, path=True, legend=True, interval=20):
     if legend:
         plt.legend(loc='upper left')
     plt.grid(True)
-    #plt.axis('off') # new
+    
 
     anim = FuncAnimation(fig, animate, init_func=init,
                          frames=len(dates), interval=interval,
                          blit=True, repeat=True)
+    
     return anim
