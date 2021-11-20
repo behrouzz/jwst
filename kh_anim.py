@@ -7,21 +7,23 @@ from mpl_toolkits.mplot3d import Axes3D, proj3d
 def play(bodies, names, colors, sizes, path=True, legend=True, interval=20):
     
     dates = bodies[0].time
+    """
 
     minxs = min([vec.x.min() for vec in bodies])
     minys = min([vec.y.min() for vec in bodies])
     minzs = min([vec.z.min() for vec in bodies])
     maxxs = max([vec.x.max() for vec in bodies])
     maxys = max([vec.y.max() for vec in bodies])
+    """
     maxzs = max([vec.z.max() for vec in bodies])
 
     fig = plt.figure(figsize=plt.figaspect(0.5)*1.2)
     ax = Axes3D(fig) # taghir bejay khate payin
     #ax = fig.add_subplot(111, projection='3d')
 
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
+    #ax.set_xlabel('X')
+    #ax.set_ylabel('Y')
+    #ax.set_zlabel('Z')
     #ax.tick_params(axis='x', labelsize=8)
     #ax.tick_params(axis='y', labelsize=8)
     #ax.tick_params(axis='z', labelsize=8)
