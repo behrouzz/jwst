@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 from matplotlib.animation import FuncAnimation
 from mpl_toolkits.mplot3d import Axes3D
+from hypatie.transform import rotating_coords
 
 def play(bodies, names, colors, sizes, path=True):
     
@@ -14,14 +15,12 @@ def play(bodies, names, colors, sizes, path=True):
 
     fig = plt.figure(figsize=plt.figaspect(0.5)*1.2)
     ax = Axes3D(fig)
-    ax.set_zlim([8*minzs, 8*maxzs])
+    #ax.set_zlim([8*minzs, 8*maxzs])
+
     
     ax.set_yticklabels([])
     ax.set_xticklabels([])
     ax.set_zticklabels([])
-
-    txt = ax.text(0, 0, 5*maxzs, ha='center', size='small', s='')
-    txt2 = ax.text(0,0, 7*maxzs, ha='center', va='top', s='AstroDataScience.Net', alpha=0.5)
     
 
     lines = []
@@ -47,16 +46,14 @@ def play(bodies, names, colors, sizes, path=True):
             line.set_ydata(bodies[j].y[i])
             line.set_3d_properties(bodies[j].z[i])
         date_str = dates[i].strftime(format='%d/%m/%Y')
-        txt.set_text(date_str)
-        ax.view_init(elev=10., azim=(i+90)/5)
-        return lines + [txt] + [ax]
+        ax.view_init(elev=90., azim=160)
+        return lines  + [ax]
 
     plt.legend(loc='upper left')
     plt.grid(True)
 
     ax.set_ylim(ax.get_xlim())
     ax.set_zlim(ax.get_xlim())
-    
 
     anim = FuncAnimation(fig, animate, init_func=init,
                          frames=len(dates), interval=20,
@@ -64,11 +61,10 @@ def play(bodies, names, colors, sizes, path=True):
     
     return anim
 
-
-with open('data/SSB_1000_alltime_eclip.pickle', 'rb') as f:
+with open('data/SSB_1000_alltime_eclip_suncenter.pickle', 'rb') as f:
     time, ls = pickle.load(f)
 
-sun_pos, earth_pos, _, jwst_pos = ls
+sun_pos, earth_pos, moon_pos, jwst_pos = ls
 
 time = time[143:642]
 sun_pos = sun_pos[143:642]
@@ -85,17 +81,21 @@ OX = OE + EX
 
 jwst_pos = OX
 #===============
-sun = hp.Body(name='Sun', pos=sun_pos, time=time)
-earth = hp.Body(name='Earth', pos=earth_pos, time=time)
-jwst = hp.Body(name='JWST', pos=jwst_pos, time=time)
 
+sun_pos = rotating_coords(sun_pos, 365.256363004, time)
+earth_pos = rotating_coords(earth_pos, 365.256363004, time)
+jwst_pos = rotating_coords(jwst_pos, 365.256363004, time)
+
+
+sun = hp.Body('Sun', sun_pos, time)
+earth = hp.Body('Earth', earth_pos, time)
+jwst = hp.Body('Moon', jwst_pos, time)
 
 bodies = [sun, earth, jwst]
-names = ['Sun', 'Earth', 'JWST']
+names = ['Sun', 'Earth', 'jwst']
 colors = ['y','b','r']
-sizes = [20, 7, 3]
+sizes = [20, 8, 3]
 
 anim = play(bodies, names, colors, sizes)
 plt.show()
-#anim.save('test.avi')
 
